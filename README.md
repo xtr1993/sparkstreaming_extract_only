@@ -40,10 +40,5 @@ spark-kafka-extract-only
   每 1 秒产生 1 条数据(如果问题无法复现, 将会调整时间戳格式增加毫秒字段,同时上游数据生成方式每 0.1 秒生成 1 条数据) 
 
 
-#### 原因
-
-* 数据的重复生成与订阅, 目前推测的原因是因为 spark streaming 发送数据时, 重启之后  kafka offset 与 spark streaming checkpoint 记录不同步导致,所以通过将 offset 统一通过定制方法记录到 zookeeper 中来解决
-
-
 #### 解决问题方法
 * 将每次 spark-streaming 作为数据订阅 consumer, 每次处理完业务逻辑之后, 会将此次的消费进度同步至 zookeeper 上, 再等到 spark-streaming 恢复的时候, 从 zookeeper 上加载 offset 来进行初始化
